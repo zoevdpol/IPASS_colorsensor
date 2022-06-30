@@ -75,6 +75,7 @@ void colorsensor::recognisecolors(){
 }
 
 
+
 void colorsensor::readRGB(uint8_t *results){
    
     write(controlreg, 0x11);
@@ -82,17 +83,17 @@ void colorsensor::readRGB(uint8_t *results){
     //rood
     uint8_t redlow = read(redlreg);
     uint8_t redhigh = read(redhreg);
-    results[0] =  samenvoegen(redlow, redhigh);
+    results[0] =  combine(redlow, redhigh);
     
     //groen
     uint8_t greenlow = read(greenlreg);
     uint8_t greenhigh = read(greenhreg);  
-    results[1] = samenvoegen(greenlow, greenhigh); 
+    results[1] = combine(greenlow, greenhigh);
     
     //blauw
     uint8_t bluelow = read(bluelreg); 
     uint8_t bluehigh= read(bluehreg); 
-    results[2]= samenvoegen(bluelow, bluehigh);
+    results[2]= combine(bluelow, bluehigh);
     
 }
 
