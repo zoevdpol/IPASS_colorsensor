@@ -1,3 +1,6 @@
+#include "hwlib.hpp"
+#include "colorsensor.hpp"
+
 /****************************************************************************************************************************
 * author ::       Zoë van de Pol
 * File ::         colorsensor.cpp
@@ -8,39 +11,36 @@
 * (See accompanying file LICENSE_1_0.txt or copy at
 * http://www.boost.org/LICENSE_1_0.txt)
 *******************************************************************************************************************************/
-#include "hwlib.hpp"
-#include "colorsensor.hpp"
 
 colorsensor::colorsensor(hwlib::i2c_bus & i2c) :
 i2c(i2c) {}
 
-void colorsensor::write(uint8_t location, uint8_t databyte){
+void colorsensor::writesensor(uint8_t registeraddress, uint8_t databyte){
 	{hwlib::i2c_write_transaction wtrans = i2c.write(slaveaddress);
-	wtrans.write(location + commandreg);
+	wtrans.write(registeraddress + commandreg);
 	wtrans.write(databyte);}
 }
 
-uint8_t colorsensor::read(uint8_t location){
-	uint8_t resultaten[2];
-	//{write(location, bus);}
+uint8_t colorsensor::read(uint8_t registeraddress){
+	uint8_t results[1];
     {hwlib::i2c_write_transaction wtrans = i2c.write(slaveaddress);
-    wtrans.write(location + commandreg);}
+    wtrans.write(registeraddress + commandreg);}
 	{hwlib::i2c_read_transaction rtrans = i2c.read(slaveaddress);
-	rtrans.read(resultaten, 1);}
-	return resultaten[0];
+	rtrans.read(results, 1);}
+	return results[0];
 }
 
 //functie om de 2 bytes te combineren naar een getal van 16 bits, combineert high en low
 uint16_t colorsensor::combine(uint8_t high, uint8_t low){
-    uint16_t samen = high;
-    samen <<= 8;
-    samen += low;
-    return samen;
+    uint16_t conjunction = high;
+    conjunction <<= 8;
+    conjunction += low;
+    return conjunction;
 }   
 //vergelijkt waardes van kleuren en herkent een kleur
 void colorsensor::recognisecolors(){
-    write(controlreg, 0x11);
-    write(enablereg, 0x03);
+    //write(controlreg, 0x11);
+    writesensor(enablereg, 0x03);
     //rood
     uint8_t redlow = read(redlreg);
     uint8_t redhigh = read(redhreg);
@@ -57,13 +57,13 @@ void colorsensor::recognisecolors(){
     uint8_t bluedata = combine(bluelow, bluehigh);
     
     //data printen
-    hwlib::cout << "blauw:" << "   "<< bluedata << hwlib::endl;
+    /*hwlib::cout << "blauw:" << "   "<< bluedata << hwlib::endl;
     hwlib::cout << "rood:" << "    " << reddata << hwlib::endl;
     hwlib::cout << "green:" << "   "<< greendata << hwlib::endl;
-    hwlib::cout<<hwlib::endl;
+    hwlib::cout<<hwlib::endl;*/
     
     //resultaat kleur printen
-    if(reddata > bluedata && reddata > greendata){
+    /*if(reddata > bluedata && reddata > greendata){
         hwlib::cout << "kleur is rood" << hwlib::endl;
     }
     if(bluedata > reddata && bluedata > greendata){
@@ -71,15 +71,15 @@ void colorsensor::recognisecolors(){
     }
     if(greendata > reddata && greendata > bluedata){
         hwlib::cout << "kleur is groen"  << hwlib::endl;
-    }
+    }*/
 }
 
 
 
 void colorsensor::readRGB(uint8_t *results){
    
-    write(controlreg, 0x11);
-    write(enablereg, 0x03);
+    writesensor(controlreg, 0x11);
+    writesensor(enablereg, 0x03);
     //rood
     uint8_t redlow = read(redlreg);
     uint8_t redhigh = read(redhreg);

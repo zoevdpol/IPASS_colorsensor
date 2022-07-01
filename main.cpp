@@ -45,7 +45,7 @@ int main(){
        ipassstrip.changeLedRGB(7, results[0], results[1], results[2]);
        ipassstrip.changeLedRGB(8, results[0], results[1], results[2]);
        ipassstrip.write();
-       testcase(colorsensor1);
+//       testcase(colorsensor1);
        
        hwlib::wait_ms(250);
   }

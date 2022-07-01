@@ -49,7 +49,7 @@ public:
    /// write function for colorsensor
    /// \details
    /// function to write to colorsensor using i2c
-    void write(uint8_t location, uint8_t databyte);
+    void writesensor(uint8_t location, uint8_t databyte);
 
     /// \brief
    /// read function for colorsensor
